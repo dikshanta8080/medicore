@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: HospitalManagement
+  profiles:
+    active: dev
+server:
+  port: 8080
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+    context-path: /api
+logging:
+  level:
+    com.acharya.dikshanta.HospitalManagement: DEBUG
+
+
