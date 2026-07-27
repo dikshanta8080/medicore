@@ -1,4 +1,4 @@
-package com.acharya.dikshanta.HospitalManagement.auth.config;
+package com.acharya.dikshanta.HospitalManagement.identity.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
