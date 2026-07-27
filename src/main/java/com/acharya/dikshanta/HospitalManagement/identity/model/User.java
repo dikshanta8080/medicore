@@ -4,6 +4,7 @@ import com.acharya.dikshanta.HospitalManagement.common.enums.Role;
 import com.acharya.dikshanta.HospitalManagement.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users",
@@ -28,4 +29,8 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Staff staff;
 }

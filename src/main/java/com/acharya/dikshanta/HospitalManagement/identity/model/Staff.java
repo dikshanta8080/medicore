@@ -2,6 +2,7 @@ package com.acharya.dikshanta.HospitalManagement.identity.model;
 
 import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
+import com.acharya.dikshanta.HospitalManagement.doctor.model.Doctor;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +30,7 @@ public class Staff extends SoftDeleteEntity {
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
+
+    @OneToOne(mappedBy = "staff", fetch = FetchType.LAZY)
+    private Doctor doctor;
 }
