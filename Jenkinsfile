@@ -8,7 +8,6 @@ pipeline {
     environment {
         DOCKER_HUB_REPO = 'dikshanta8080/hospital-management'
         IMAGE_TAG       = 'latest'
-        DOCKER_CREDS    = credentials('docker-hub-credentials')
     }
 
     stages {
@@ -28,8 +27,8 @@ pipeline {
 
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    sh "echo \$DOCKER_CREDS_PSW | docker login -u \$DOCKER_CREDS_USR --password-stdin"
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                     sh "docker push ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
                     sh "docker push ${DOCKER_HUB_REPO}:${BUILD_NUMBER}"
                 }
