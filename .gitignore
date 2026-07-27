@@ -36,4 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 .env
+DEPLOYMENT_JENKINS_DOCKER.md
 
