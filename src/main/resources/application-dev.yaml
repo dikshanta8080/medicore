@@ -16,6 +16,7 @@ app:
     name: ${SUPERADMIN_NAME:Diskahnta Acharya}
     username: ${SUPERADMIN_USERNAME:dikshanta8080}
     password: ${SUPERADMIN_PASSWORD:root}
+    email: ${SUPERADMIN_EMAIL:dikshantaacharya04@gmail.com}
   jwt:
     secret: ${JWT_SECRET:bXlTdXBlclNlY3JldEtleVRoYXRJc0xvbmdFbm91Z2hGb3JITVNTNTI=}
     expiry: ${JWT_EXPIRY:10}
