@@ -32,3 +32,4 @@ public record PagedResponse<T>(
                 .number(page.getNumber())
                 .build();
     }
+}
