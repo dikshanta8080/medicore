@@ -31,6 +31,6 @@ public class Staff extends SoftDeleteEntity {
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    @OneToOne(mappedBy = "staff", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "staff")
     private Doctor doctor;
 }
