@@ -1,0 +1,41 @@
+services:
+  app:
+    build: .
+    container_name: hospital-management
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRY: ${JWT_EXPIRY}
+      SUPERADMIN_NAME: ${SUPERADMIN_NAME}
+      SUPERADMIN_USERNAME: ${SUPERADMIN_USERNAME}
+      SUPERADMIN_PASSWORD: ${SUPERADMIN_PASSWORD}
+      SUPERADMIN_EMAIL: ${SUPERADMIN_EMAIL}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
