@@ -20,7 +20,7 @@ services:
       retries: 5
 
   app:
-    image: dikshanta8080/hospital-management:latest
+    image: dikshanta07/hospital-management:latest
     container_name: hospital_app
     restart: always
     ports:

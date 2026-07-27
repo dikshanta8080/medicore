@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_HUB_REPO = 'dikshanta8080/hospital-management'
+        DOCKER_HUB_REPO = 'dikshanta07/hospital-management'
         IMAGE_TAG       = 'latest'
     }
 
