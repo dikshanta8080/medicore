@@ -38,6 +38,15 @@ public class StaffService {
         return staffMapper.toResponse(staffRepository.save(staff));
     }
 
+    @Transactional
+    public Staff saveStaff(CreateStaffRequest request) {
+        checkIfStaffAlreadyExists(request);
+        User user = buildUser(request);
+        Staff staff = staffMapper.toStaff(request);
+        staff.setUser(userRepository.save(user));
+        return staff;
+    }
+
     @Transactional(readOnly = true)
     public StaffResponse getStaff(UUID id) {
         Staff staff = findStaff(id);

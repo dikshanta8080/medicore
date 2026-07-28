@@ -28,4 +28,8 @@ public class Department extends SoftDeleteEntity {
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Doctor> doctors = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "hod_id", unique = true)
+    private Doctor hod;
+
 }
