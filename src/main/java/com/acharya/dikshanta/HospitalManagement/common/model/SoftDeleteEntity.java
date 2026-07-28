@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public abstract class SoftDeleteEntity extends BaseEntity {
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean deleted = false;
 
     @Column(name = "deleted_at")
