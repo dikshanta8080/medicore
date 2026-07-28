@@ -3,9 +3,11 @@ package com.acharya.dikshanta.HospitalManagement.patient.model;
 import com.acharya.dikshanta.HospitalManagement.common.enums.BloodGroup;
 import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
-import com.acharya.dikshanta.HospitalManagement.identity.model.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
@@ -66,7 +68,5 @@ public class Patient extends SoftDeleteEntity {
     @Column(name = "allergies", columnDefinition = "TEXT")
     private String allergies;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
+
 }

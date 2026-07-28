@@ -3,9 +3,12 @@ package com.acharya.dikshanta.HospitalManagement.identity.controller;
 import com.acharya.dikshanta.HospitalManagement.common.dto.ApiResponse;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PaginationRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.AssignHodRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDepartmentRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.DoctorFilterRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.RemoveHodRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.ReplaceHodRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDepartmentRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDoctorRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DepartmentResponse;
@@ -91,6 +94,25 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> deleteDepartment(@PathVariable UUID id) {
         departmentService.deleteDepartment(id);
         return ResponseEntity.ok().body(ApiResponse.success(null, "Department deleted successfully"));
+    }
+
+    // HOD Endpoints
+    @PostMapping("/departments/hod")
+    public ResponseEntity<ApiResponse<DoctorResponse>> assignHod(@RequestBody @Valid AssignHodRequest request) {
+        var doctorResponse = departmentService.assignHod(request);
+        return ResponseEntity.ok(ApiResponse.success(doctorResponse, "HOD assigned successfully"));
+    }
+
+    @PatchMapping("/departments/hod")
+    public ResponseEntity<ApiResponse<DoctorResponse>> replaceHod(@RequestBody @Valid ReplaceHodRequest request) {
+        var doctorResponse = departmentService.replaceHod(request);
+        return ResponseEntity.ok(ApiResponse.success(doctorResponse, "HOD replaced successfully"));
+    }
+
+    @DeleteMapping("/departments/hod")
+    public ResponseEntity<ApiResponse<DepartmentResponse>> removeHod(@RequestBody @Valid RemoveHodRequest request) {
+        var departmentResponse = departmentService.removeHod(request);
+        return ResponseEntity.ok(ApiResponse.success(departmentResponse, "HOD removed successfully"));
     }
 
     @PostMapping("/doctors")
