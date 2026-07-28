@@ -27,4 +27,5 @@ public class Department extends SoftDeleteEntity {
     @Builder.Default
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Doctor> doctors = new ArrayList<>();
+
 }
