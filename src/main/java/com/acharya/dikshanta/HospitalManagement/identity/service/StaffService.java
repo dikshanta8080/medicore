@@ -38,6 +38,15 @@ public class StaffService {
         return staffMapper.toResponse(staffRepository.save(staff));
     }
 
+    @Transactional
+    public Staff saveStaff(CreateStaffRequest request) {
+        checkIfStaffAlreadyExists(request);
+        User user = buildUser(request);
+        Staff staff = staffMapper.toStaff(request);
+        staff.setUser(userRepository.save(user));
+        return staff;
+    }
+
     @Transactional(readOnly = true)
     public StaffResponse getStaff(UUID id) {
         Staff staff = findStaff(id);
@@ -69,6 +78,15 @@ public class StaffService {
             staff.setPhoneNumber(request.phoneNumber());
         }
         return staffMapper.toResponse(staff);
+    }
+
+    @Transactional
+    public void deleteStaff(UUID id) {
+        Staff staff = findStaff(id);
+        if (staff.getUser() != null) {
+            userRepository.delete(staff.getUser());
+        }
+        staffRepository.delete(staff);
     }
 
     private void checkIfStaffAlreadyExists(CreateStaffRequest request) {
