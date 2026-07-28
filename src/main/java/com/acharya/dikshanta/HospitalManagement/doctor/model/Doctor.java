@@ -32,6 +32,4 @@ public class Doctor extends SoftDeleteEntity {
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
-
-
 }

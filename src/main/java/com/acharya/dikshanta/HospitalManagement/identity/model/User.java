@@ -4,6 +4,7 @@ import com.acharya.dikshanta.HospitalManagement.common.enums.Role;
 import com.acharya.dikshanta.HospitalManagement.common.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -33,4 +34,8 @@ public class User extends BaseEntity {
     @JsonIgnore
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Staff staff;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private Patient patient;
 }

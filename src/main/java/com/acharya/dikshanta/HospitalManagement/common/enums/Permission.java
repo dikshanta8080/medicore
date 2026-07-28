@@ -31,4 +31,10 @@ public enum Permission {
     USER_WRITE,
     USER_UPDATE,
     USER_DELETE,
+
+    // ── Patient ─────────────────────────────
+    PATIENT_READ,
+    PATIENT_WRITE,
+    PATIENT_UPDATE,
+    PATIENT_DELETE,
 }
