@@ -1,4 +1,4 @@
-package com.acharya.dikshanta.HospitalManagement.identity.mapper;
+package com.acharya.dikshanta.HospitalManagement.doctor.mapper;
 
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DoctorResponse;
