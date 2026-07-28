@@ -6,6 +6,8 @@ import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
 import com.acharya.dikshanta.HospitalManagement.identity.model.User;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
 
@@ -15,9 +17,10 @@ import java.time.LocalDate;
         @UniqueConstraint(name = "unq_patient_phone", columnNames = {"phone_number"}),
         @UniqueConstraint(name = "unq_patient_email", columnNames = {"email"})
 })
+@SQLDelete(sql = "UPDATE patients SET deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 public class Patient extends SoftDeleteEntity {

@@ -5,13 +5,16 @@ import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
 import com.acharya.dikshanta.HospitalManagement.doctor.model.Doctor;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "staffs", uniqueConstraints = {
         @UniqueConstraint(name = "unq_phone", columnNames = {"phone_number"})})
+@SQLDelete(sql = "UPDATE staffs SET deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 public class Staff extends SoftDeleteEntity {

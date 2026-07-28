@@ -71,6 +71,15 @@ public class StaffService {
         return staffMapper.toResponse(staff);
     }
 
+    @Transactional
+    public void deleteStaff(UUID id) {
+        Staff staff = findStaff(id);
+        if (staff.getUser() != null) {
+            userRepository.delete(staff.getUser());
+        }
+        staffRepository.delete(staff);
+    }
+
     private void checkIfStaffAlreadyExists(CreateStaffRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new BusinessException("Staff Already Exists");

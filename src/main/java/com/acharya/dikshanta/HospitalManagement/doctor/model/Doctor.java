@@ -4,14 +4,17 @@ import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
 import com.acharya.dikshanta.HospitalManagement.identity.model.Staff;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "doctors")
+@SQLDelete(sql = "UPDATE doctors SET deleted = true, deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
 @Setter
 public class Doctor extends SoftDeleteEntity {
