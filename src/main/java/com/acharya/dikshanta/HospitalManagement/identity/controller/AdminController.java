@@ -4,9 +4,14 @@ import com.acharya.dikshanta.HospitalManagement.common.dto.ApiResponse;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PaginationRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDepartmentRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.DoctorFilterRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDepartmentRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDoctorRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DepartmentResponse;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DoctorResponse;
 import com.acharya.dikshanta.HospitalManagement.doctor.service.DepartmentService;
+import com.acharya.dikshanta.HospitalManagement.doctor.service.DoctorService;
 import com.acharya.dikshanta.HospitalManagement.identity.dto.request.CreateStaffRequest;
 import com.acharya.dikshanta.HospitalManagement.identity.dto.request.UpdateStaffRequest;
 import com.acharya.dikshanta.HospitalManagement.identity.dto.response.StaffResponse;
@@ -24,6 +29,7 @@ import java.util.UUID;
 public class AdminController {
     private final StaffService staffService;
     private final DepartmentService departmentService;
+    private final DoctorService doctorService;
 
     // Staff Endpoints
     @PostMapping("/staffs")
@@ -85,5 +91,38 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> deleteDepartment(@PathVariable UUID id) {
         departmentService.deleteDepartment(id);
         return ResponseEntity.ok().body(ApiResponse.success(null, "Department deleted successfully"));
+    }
+
+    @PostMapping("/doctors")
+    public ResponseEntity<ApiResponse<DoctorResponse>> createDoctor(@RequestBody @Valid CreateDoctorRequest request) {
+        var doctorResponse = doctorService.createDoctor(request);
+        return ResponseEntity.ok().body(ApiResponse.success(doctorResponse, "Doctor created successfully"));
+    }
+
+    @GetMapping("/doctors/{id}")
+    public ResponseEntity<ApiResponse<DoctorResponse>> getDoctor(@PathVariable UUID id) {
+        var doctorResponse = doctorService.getDoctor(id);
+        return ResponseEntity.ok().body(ApiResponse.success(doctorResponse, "Doctor fetched by id"));
+    }
+
+    @GetMapping("/doctors")
+    public ResponseEntity<ApiResponse<PagedResponse<DoctorResponse>>> getDoctors
+            (
+                    @ModelAttribute PaginationRequest request,
+                    @ModelAttribute DoctorFilterRequest doctorFilterRequest) {
+        var doctorResponses = doctorService.getDoctors(doctorFilterRequest, request.toPageable());
+        return ResponseEntity.ok().body(ApiResponse.success(doctorResponses, "doctors fetched successfully"));
+    }
+
+    @PutMapping("/doctors")
+    public ResponseEntity<ApiResponse<DoctorResponse>> updateDoctor(@RequestBody @Valid UpdateDoctorRequest request) {
+        var doctorResponse = doctorService.updateDoctor(request);
+        return ResponseEntity.ok().body(ApiResponse.success(doctorResponse, "Doctor updated successfully"));
+    }
+
+    @DeleteMapping("/doctors/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteDoctor(@PathVariable UUID id) {
+        doctorService.deleteDoctor(id);
+        return ResponseEntity.ok().body(ApiResponse.success(null, "Doctor deleted successfully"));
     }
 }
