@@ -1,6 +1,9 @@
 package com.acharya.dikshanta.HospitalManagement.doctor.service;
 
+import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
+import com.acharya.dikshanta.HospitalManagement.common.dto.PaginationRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorScheduleRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.FilterDoctorScheduleRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DoctorScheduleResponse;
 import com.acharya.dikshanta.HospitalManagement.doctor.mapper.DoctorScheduleMapper;
 import com.acharya.dikshanta.HospitalManagement.doctor.model.DoctorSchedule;
@@ -21,5 +24,10 @@ public class DoctorScheduleService {
     public DoctorScheduleResponse createSchedule(CreateDoctorScheduleRequest request) {
         DoctorSchedule doctorSchedule = doctorScheduleMapper.toEntity(request);
         return doctorScheduleMapper.toResponse(doctorScheduleRepository.save(doctorSchedule));
+    }
+
+    @Transactional
+    public PagedResponse<DoctorSchedule> getDoctor(PaginationRequest request, FilterDoctorScheduleRequest filterDoctorScheduleRequest) {
+        return null;
     }
 }
