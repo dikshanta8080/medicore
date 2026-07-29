@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/staffs")
+@RequestMapping("/specializations")
 @RequiredArgsConstructor
-public class StaffController {
+public class SpecializationController {
     private final SpecializationService specializationService;
 
     @PostMapping
@@ -27,18 +27,18 @@ public class StaffController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<SpecializationResponse>>> getSpecializations() {
         var response = specializationService.getSpecializations();
-        return ResponseEntity.ok().body(ApiResponse.success(response, "Specializations fetched"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Specializations fetched"));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<SpecializationResponse>> getSpecialization(@PathVariable UUID id) {
         var response = specializationService.getSpecialization(id);
-        return ResponseEntity.ok().body(ApiResponse.success(response, "Specialization fetched"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Specialization fetched"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteSpecialization(@PathVariable UUID id) {
         specializationService.deleteSpecialization(id);
-        return ResponseEntity.ok().body(ApiResponse.success(null, "Specialization deleted successfully"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Specialization deleted successfully"));
     }
 }
