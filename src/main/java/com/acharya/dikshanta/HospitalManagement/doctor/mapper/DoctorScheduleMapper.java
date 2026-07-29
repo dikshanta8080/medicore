@@ -1,14 +1,24 @@
 package com.acharya.dikshanta.HospitalManagement.doctor.mapper;
 
-import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorScheduleRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DoctorScheduleResponse;
+import com.acharya.dikshanta.HospitalManagement.doctor.model.Doctor;
 import com.acharya.dikshanta.HospitalManagement.doctor.model.DoctorSchedule;
-import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface DoctorScheduleMapper {
-    DoctorSchedule toEntity(CreateDoctorScheduleRequest request);
+@Component
+public class DoctorScheduleMapper {
 
-    DoctorScheduleResponse toResponse(DoctorSchedule doctorSchedule);
-
+    public DoctorScheduleResponse toResponse(DoctorSchedule schedule) {
+        Doctor doctor = schedule.getDoctor();
+        return DoctorScheduleResponse.builder()
+                .id(schedule.getId())
+                .doctorId(doctor.getId())
+                .doctorName(doctor.getStaff().getName())
+                .department(doctor.getDepartment().getName())
+                .specialization(doctor.getSpecialization().getName())
+                .day(schedule.getDayOfWeek())
+                .startTime(schedule.getStartTime())
+                .endTime(schedule.getEndTime())
+                .build();
+    }
 }

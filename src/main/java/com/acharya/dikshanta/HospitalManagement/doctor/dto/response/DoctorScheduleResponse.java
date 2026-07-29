@@ -9,9 +9,12 @@ import java.util.UUID;
 @Builder
 public record DoctorScheduleResponse(
         UUID id,
+        UUID doctorId,
+        String doctorName,
+        String department,
+        String specialization,
         Days day,
         LocalTime startTime,
         LocalTime endTime
-
 ) {
 }
