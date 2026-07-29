@@ -23,11 +23,11 @@ public class PatientService {
     private final PatientMapper patientMapper;
 
     @Transactional
-    public PatientResponse create(CreatePatientRequest request){
+    public PatientResponse create(CreatePatientRequest request) {
         if (patientRepository.existsByPhoneNumber(request.phoneNumber())) {
             throw new BusinessException("Phone number already exists.");
         }
-        if (patientRepository.existsByEmail(request.email()) ){
+        if (patientRepository.existsByEmail(request.email())) {
             throw new BusinessException("Email already exists.");
         }
         Patient patient = patientMapper.toEntity(request);
@@ -36,34 +36,33 @@ public class PatientService {
     }
 
     @Transactional
-    public PatientResponse update(CreatePatientRequest request, UUID id){
+    public PatientResponse update(CreatePatientRequest request, UUID id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Patient not found with the provided id"));
-        if(request.phoneNumber() != null){
+        if (request.phoneNumber() != null) {
             patient.setPhoneNumber(request.phoneNumber());
         }
-        if(request.allergies() != null){
+        if (request.allergies() != null) {
             patient.setAllergies(request.allergies());
         }
-        if(request.medicalHistory() != null){
+        if (request.medicalHistory() != null) {
             patient.setMedicalHistory(request.medicalHistory());
         }
-        if(request.fullName() != null){
+        if (request.fullName() != null) {
             patient.setFullName(request.fullName());
         }
         return patientMapper.toResponse(patient);
     }
 
     @Transactional
-    public PagedResponse<PatientResponse> getAllPatients(Pageable pageable){
+    public PagedResponse<PatientResponse> getAllPatients(Pageable pageable) {
         Page<Patient> patientPage = patientRepository.findAll(pageable);
         Page<PatientResponse> responsePage = patientPage.map(patientMapper::toResponse);
         return PagedResponse.toPagedResponse(responsePage);
     }
 
-
     @Transactional
-    public PatientResponse getPatientById(UUID id){
+    public PatientResponse getPatientById(UUID id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with the provided id"));
         return patientMapper.toResponse(patient);
