@@ -17,7 +17,8 @@ public enum Role {
             Permission.DEPARTMENT_READ, Permission.DEPARTMENT_WRITE, Permission.DEPARTMENT_UPDATE, Permission.DEPARTMENT_DELETE,
             Permission.SPECIALIZATION_READ, Permission.SPECIALIZATION_WRITE, Permission.SPECIALIZATION_UPDATE, Permission.SPECIALIZATION_DELETE,
             Permission.STAFF_READ, Permission.STAFF_WRITE, Permission.STAFF_UPDATE, Permission.STAFF_DELETE,
-            Permission.PATIENT_READ, Permission.PATIENT_WRITE, Permission.PATIENT_UPDATE, Permission.PATIENT_DELETE
+            Permission.PATIENT_READ, Permission.PATIENT_WRITE, Permission.PATIENT_UPDATE, Permission.PATIENT_DELETE,
+            Permission.SCHEDULE_READ, Permission.SCHEDULE_WRITE, Permission.SCHEDULE_UPDATE, Permission.SCHEDULE_DELETE
     )),
 
     RECEPTIONIST(EnumSet.of(
@@ -25,7 +26,8 @@ public enum Role {
             Permission.DEPARTMENT_READ,
             Permission.SPECIALIZATION_READ,
             Permission.STAFF_READ,
-            Permission.PATIENT_READ, Permission.PATIENT_WRITE, Permission.PATIENT_UPDATE
+            Permission.PATIENT_READ, Permission.PATIENT_WRITE, Permission.PATIENT_UPDATE,
+            Permission.SCHEDULE_READ
     )),
 
     DOCTOR(EnumSet.of(

@@ -6,14 +6,19 @@ import com.acharya.dikshanta.HospitalManagement.common.dto.PaginationRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.AssignHodRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDepartmentRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.CreateDoctorScheduleRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.FilterDoctorScheduleRequest;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDoctorScheduleRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.DoctorFilterRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.RemoveHodRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.ReplaceHodRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDepartmentRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.UpdateDoctorRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DepartmentResponse;
+import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DoctorScheduleResponse;
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.response.DoctorResponse;
 import com.acharya.dikshanta.HospitalManagement.doctor.service.DepartmentService;
+import com.acharya.dikshanta.HospitalManagement.doctor.service.DoctorScheduleService;
 import com.acharya.dikshanta.HospitalManagement.doctor.service.DoctorService;
 import com.acharya.dikshanta.HospitalManagement.identity.dto.request.CreateStaffRequest;
 import com.acharya.dikshanta.HospitalManagement.identity.dto.request.UpdateStaffRequest;
@@ -33,6 +38,7 @@ public class AdminController {
     private final StaffService staffService;
     private final DepartmentService departmentService;
     private final DoctorService doctorService;
+    private final DoctorScheduleService doctorScheduleService;
 
     // Staff Endpoints
     @PostMapping("/staffs")
@@ -146,5 +152,40 @@ public class AdminController {
     public ResponseEntity<ApiResponse<Void>> deleteDoctor(@PathVariable UUID id) {
         doctorService.deleteDoctor(id);
         return ResponseEntity.ok().body(ApiResponse.success(null, "Doctor deleted successfully"));
+    }
+
+    // Doctor Schedule Endpoints
+    @PostMapping("/doctors/schedules")
+    public ResponseEntity<ApiResponse<DoctorScheduleResponse>> createDoctorSchedule(
+            @RequestBody @Valid CreateDoctorScheduleRequest request) {
+        var scheduleResponse = doctorScheduleService.createSchedule(request);
+        return ResponseEntity.ok().body(ApiResponse.success(scheduleResponse, "Doctor schedule created successfully"));
+    }
+
+    @GetMapping("/doctors/schedules")
+    public ResponseEntity<ApiResponse<PagedResponse<DoctorScheduleResponse>>> getDoctorSchedules(
+            @ModelAttribute PaginationRequest paginationRequest,
+            @ModelAttribute FilterDoctorScheduleRequest filterRequest) {
+        var pagedResponse = doctorScheduleService.getSchedules(filterRequest, paginationRequest.toPageable());
+        return ResponseEntity.ok().body(ApiResponse.success(pagedResponse, "Doctor schedules fetched successfully"));
+    }
+
+    @GetMapping("/doctors/schedules/{id}")
+    public ResponseEntity<ApiResponse<DoctorScheduleResponse>> getDoctorSchedule(@PathVariable UUID id) {
+        var scheduleResponse = doctorScheduleService.getSchedule(id);
+        return ResponseEntity.ok().body(ApiResponse.success(scheduleResponse, "Doctor schedule fetched successfully"));
+    }
+
+    @PutMapping("/doctors/schedules")
+    public ResponseEntity<ApiResponse<DoctorScheduleResponse>> updateDoctorSchedule(
+            @RequestBody @Valid UpdateDoctorScheduleRequest request) {
+        var scheduleResponse = doctorScheduleService.updateSchedule(request);
+        return ResponseEntity.ok().body(ApiResponse.success(scheduleResponse, "Doctor schedule updated successfully"));
+    }
+
+    @DeleteMapping("/doctors/schedules/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteDoctorSchedule(@PathVariable UUID id) {
+        doctorScheduleService.deleteSchedule(id);
+        return ResponseEntity.ok().body(ApiResponse.success(null, "Doctor schedule deleted successfully"));
     }
 }
