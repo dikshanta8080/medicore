@@ -3,6 +3,8 @@ package com.acharya.dikshanta.HospitalManagement.patient.controller;
 import com.acharya.dikshanta.HospitalManagement.common.dto.ApiResponse;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PaginationRequest;
+import com.acharya.dikshanta.HospitalManagement.common.enums.BloodGroup;
+import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
 import com.acharya.dikshanta.HospitalManagement.patient.dto.request.CreatePatientRequest;
 import com.acharya.dikshanta.HospitalManagement.patient.dto.response.PatientResponse;
 import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientRepository;
@@ -44,13 +46,30 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PagedResponse<PatientResponse>>> getPatients(@ModelAttribute PaginationRequest request){
-        PagedResponse<PatientResponse> patientPage = patientService.getAllPatients(request.toPageable());
-        ApiResponse<PagedResponse<PatientResponse>> apiResponse = ApiResponse.<PagedResponse<PatientResponse>>builder()
-                .data(patientPage)
-                .message("Patients fetched successfully")
-                .status(true)
-                .build();
+    public ResponseEntity<ApiResponse<PagedResponse<PatientResponse>>> getPatients(
+            @ModelAttribute PaginationRequest request,
+            @RequestParam(required = false) String patientNumber,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) Gender gender,
+            @RequestParam(required = false) BloodGroup bloodGroup) {
+
+        PagedResponse<PatientResponse> patientPage = patientService.getAllPatients(
+                patientNumber,
+                fullName,
+                phoneNumber,
+                gender,
+                bloodGroup,
+                request.toPageable()
+        );
+
+        ApiResponse<PagedResponse<PatientResponse>> apiResponse =
+                ApiResponse.<PagedResponse<PatientResponse>>builder()
+                        .data(patientPage)
+                        .message("Patients fetched successfully")
+                        .status(true)
+                        .build();
+
         return ResponseEntity.ok(apiResponse);
     }
 

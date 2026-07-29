@@ -1,8 +1,11 @@
 package com.acharya.dikshanta.HospitalManagement.patient.service;
 
 import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
+import com.acharya.dikshanta.HospitalManagement.common.enums.BloodGroup;
+import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.BusinessException;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.ResourceNotFoundException;
+import com.acharya.dikshanta.HospitalManagement.common.specifications.PatientSpecification;
 import com.acharya.dikshanta.HospitalManagement.patient.dto.request.CreatePatientRequest;
 import com.acharya.dikshanta.HospitalManagement.patient.dto.response.PatientResponse;
 import com.acharya.dikshanta.HospitalManagement.patient.mapper.PatientMapper;
@@ -11,6 +14,7 @@ import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientReposi
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,10 +58,27 @@ public class PatientService {
         return patientMapper.toResponse(patient);
     }
 
-    @Transactional
-    public PagedResponse<PatientResponse> getAllPatients(Pageable pageable){
-        Page<Patient> patientPage = patientRepository.findAll(pageable);
-        Page<PatientResponse> responsePage = patientPage.map(patientMapper::toResponse);
+    @Transactional(readOnly = true)
+    public PagedResponse<PatientResponse> getAllPatients(
+            String patientNumber,
+            String fullName,
+            String phoneNumber,
+            Gender gender,
+            BloodGroup bloodGroup,
+            Pageable pageable) {
+
+        Specification<Patient> specification = PatientSpecification.search(
+                patientNumber,
+                fullName,
+                phoneNumber,
+                gender,
+                bloodGroup
+        );
+
+        Page<Patient> patients = patientRepository.findAll(specification, pageable);
+
+        Page<PatientResponse> responsePage = patients.map(patientMapper::toResponse);
+
         return PagedResponse.toPagedResponse(responsePage);
     }
 
