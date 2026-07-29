@@ -1,10 +1,12 @@
 package com.acharya.dikshanta.HospitalManagement.patient.dto.request;
 
+import com.acharya.dikshanta.HospitalManagement.common.enums.BloodGroup;
+import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -17,13 +19,16 @@ public record CreatePatientRequest(
         @NotBlank(message = "full name is required")
         String fullName,
 
-        @NotBlank(message = "date of birth is required")
-        @DateTimeFormat(pattern = "dd-MM-yyyy")
+        @NotBlank(message = "address is required")
+        String address,
+
+        @NotNull(message = "date of birth is required")
+        @JsonFormat(pattern = "dd-MM-yyyy")
         LocalDate dateOfBirth,
 
-        String gender,
+        Gender gender,
 
-        String bloodGroup,
+        BloodGroup bloodGroup,
 
         @NotBlank(message = "phone number is required")
         String phoneNumber,
