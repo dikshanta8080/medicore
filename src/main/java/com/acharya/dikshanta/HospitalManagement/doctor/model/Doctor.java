@@ -3,11 +3,15 @@ package com.acharya.dikshanta.HospitalManagement.doctor.model;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
 import com.acharya.dikshanta.HospitalManagement.identity.model.Staff;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "doctors")
@@ -35,4 +39,7 @@ public class Doctor extends SoftDeleteEntity {
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<DoctorSchedule> schedules;
 }

@@ -2,12 +2,14 @@ package com.acharya.dikshanta.HospitalManagement.identity.model;
 
 import com.acharya.dikshanta.HospitalManagement.common.enums.Role;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
-import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "users",
@@ -38,7 +40,5 @@ public class User extends SoftDeleteEntity {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Staff staff;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private Patient patient;
+
 }
