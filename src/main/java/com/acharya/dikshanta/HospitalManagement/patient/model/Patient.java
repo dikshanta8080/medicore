@@ -30,8 +30,8 @@ public class Patient extends SoftDeleteEntity {
     @Column(name = "patient_number", nullable = false, unique = true)
     private String patientNumber;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
@@ -41,25 +41,25 @@ public class Patient extends SoftDeleteEntity {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "blood_group")
+    @Column(name = "blood_group", nullable = false)
     private BloodGroup bloodGroup;
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "emergency_contact_name")
+    @Column(name = "emergency_contact_name",  nullable = false)
     private String emergencyContactName;
 
-    @Column(name = "emergency_contact_phone")
+    @Column(name = "emergency_contact_phone", nullable = false)
     private String emergencyContactPhone;
 
-    @Column(name = "emergency_contact_relation")
+    @Column(name = "emergency_contact_relation", nullable = false)
     private String emergencyContactRelation;
 
     @Column(name = "medical_history", columnDefinition = "TEXT")
