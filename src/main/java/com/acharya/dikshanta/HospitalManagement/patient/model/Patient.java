@@ -67,6 +67,4 @@ public class Patient extends SoftDeleteEntity {
 
     @Column(name = "allergies", columnDefinition = "TEXT")
     private String allergies;
-
-
 }
