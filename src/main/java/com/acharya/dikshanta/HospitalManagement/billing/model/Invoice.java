@@ -1,5 +1,6 @@
 package com.acharya.dikshanta.HospitalManagement.billing.model;
 
+import com.acharya.dikshanta.HospitalManagement.appointment.model.Appointment;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
 import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
 import jakarta.persistence.*;
@@ -43,16 +44,24 @@ public class Invoice extends SoftDeleteEntity {
     @Column(name = "balance_due", nullable = false)
     private BigDecimal balanceDue;
 
+    @Column(name = "total_amount", nullable = false)
+    private BigDecimal totalAmount;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<InvoiceItem> invoices;
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InvoiceItem> invoiceItems;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    private List<Payment> payments;
 }

@@ -37,4 +37,8 @@ public class InvoiceItem extends SoftDeleteEntity {
     @Column(name = "item_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private ItemType itemType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice;
 }
