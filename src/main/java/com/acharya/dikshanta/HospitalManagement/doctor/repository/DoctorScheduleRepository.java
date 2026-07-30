@@ -29,4 +29,17 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
             @Param("endTime") LocalTime endTime,
             @Param("excludeId") UUID excludeId
     );
+
+    @Query("""
+            SELECT COUNT(s) > 0 FROM DoctorSchedule s
+            WHERE s.doctor.id = :doctorId
+            AND s.dayOfWeek = :day
+            AND s.startTime <= :time
+            AND s.endTime > :time
+            """)
+    boolean isDoctorAvailableAt(
+            @Param("doctorId") UUID doctorId,
+            @Param("day") Days day,
+            @Param("time") LocalTime time
+    );
 }

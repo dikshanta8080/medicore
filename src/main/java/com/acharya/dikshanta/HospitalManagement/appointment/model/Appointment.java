@@ -2,6 +2,7 @@ package com.acharya.dikshanta.HospitalManagement.appointment.model;
 
 import com.acharya.dikshanta.HospitalManagement.appointment.enums.AppointmentStatus;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
+import com.acharya.dikshanta.HospitalManagement.consultation.model.Consultation;
 import com.acharya.dikshanta.HospitalManagement.doctor.model.Department;
 import com.acharya.dikshanta.HospitalManagement.doctor.model.Doctor;
 import com.acharya.dikshanta.HospitalManagement.identity.model.Staff;
@@ -49,4 +50,7 @@ public class Appointment extends SoftDeleteEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booked_by")
     private Staff bookedBy;
+    
+    @OneToOne(mappedBy = "appointment")
+    private Consultation consultation;
 }

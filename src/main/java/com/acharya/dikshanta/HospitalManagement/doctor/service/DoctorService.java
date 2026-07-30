@@ -1,5 +1,8 @@
 package com.acharya.dikshanta.HospitalManagement.doctor.service;
 
+import com.acharya.dikshanta.HospitalManagement.appointment.dto.response.AppointmentResponse;
+import com.acharya.dikshanta.HospitalManagement.appointment.service.AppointmentService;
+import com.acharya.dikshanta.HospitalManagement.common.LoggedInUser;
 import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.BusinessException;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.ResourceNotFoundException;
@@ -27,6 +30,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,6 +43,14 @@ public class DoctorService {
     private final StaffService staffService;
     private final StaffMapper staffMapper;
     private final DoctorMapper doctorMapper;
+    private final AppointmentService appointmentService;
+
+    @Transactional(readOnly = true)
+    public List<AppointmentResponse> getMyTodayAppointments() {
+        Doctor doctor = doctorRepository.findByStaffId(LoggedInUser.getStaffId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor profile not found for the logged-in user"));
+        return appointmentService.getTodayAppointmentsByDoctorId(doctor.getId());
+    }
 
     @Transactional
     public DoctorResponse createDoctor(CreateDoctorRequest request) {
