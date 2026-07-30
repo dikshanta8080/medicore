@@ -44,7 +44,7 @@ public class StaffService {
         User user = buildUser(request);
         Staff staff = staffMapper.toStaff(request);
         staff.setUser(userRepository.save(user));
-        return staff;
+        return staffRepository.save(staff);
     }
 
     @Transactional(readOnly = true)
