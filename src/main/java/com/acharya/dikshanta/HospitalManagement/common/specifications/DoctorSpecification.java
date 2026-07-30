@@ -2,6 +2,7 @@ package com.acharya.dikshanta.HospitalManagement.common.specifications;
 
 import com.acharya.dikshanta.HospitalManagement.doctor.dto.request.DoctorFilterRequest;
 import com.acharya.dikshanta.HospitalManagement.doctor.model.Doctor;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -34,6 +35,21 @@ public class DoctorSpecification {
 
             if (request.specializationId() != null) {
                 predicates.add(cb.equal(root.get("specialization").get("id"), request.specializationId()));
+            }
+
+            if (request.day() != null || request.availableAt() != null) {
+                var scheduleJoin = root.join("schedules", JoinType.INNER);
+
+                if (request.day() != null) {
+                    predicates.add(cb.equal(scheduleJoin.get("dayOfWeek"), request.day()));
+                }
+
+                if (request.availableAt() != null) {
+                    predicates.add(cb.lessThanOrEqualTo(scheduleJoin.get("startTime"), request.availableAt()));
+                    predicates.add(cb.greaterThan(scheduleJoin.get("endTime"), request.availableAt()));
+                }
+
+                query.distinct(true);
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
