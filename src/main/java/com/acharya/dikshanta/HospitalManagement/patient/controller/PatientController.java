@@ -10,7 +10,6 @@ import com.acharya.dikshanta.HospitalManagement.patient.dto.response.PatientResp
 import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientRepository;
 import com.acharya.dikshanta.HospitalManagement.patient.service.PatientService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +23,7 @@ public class PatientController {
     private final PatientService patientService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PatientResponse>> create(@RequestBody CreatePatientRequest request){
+    public ResponseEntity<ApiResponse<PatientResponse>> create(@RequestBody CreatePatientRequest request) {
         PatientResponse patientResponse = patientService.create(request);
         ApiResponse<PatientResponse> apiResponse = ApiResponse.<PatientResponse>builder()
                 .data(patientResponse)
@@ -35,7 +34,7 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<PatientResponse>> getPatientById(@PathVariable UUID id){
+    public ResponseEntity<ApiResponse<PatientResponse>> getPatientById(@PathVariable UUID id) {
         PatientResponse patientResponse = patientService.getPatientById(id);
         ApiResponse<PatientResponse> apiResponse = ApiResponse.<PatientResponse>builder()
                 .data(patientResponse)
@@ -55,11 +54,6 @@ public class PatientController {
             @RequestParam(required = false) BloodGroup bloodGroup) {
 
         PagedResponse<PatientResponse> patientPage = patientService.getAllPatients(
-                patientNumber,
-                fullName,
-                phoneNumber,
-                gender,
-                bloodGroup,
                 request.toPageable()
         );
 
@@ -75,7 +69,7 @@ public class PatientController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PatientResponse>> updatePatient(@PathVariable UUID id,
-                                                                      @RequestBody CreatePatientRequest request ){
+                                                                      @RequestBody CreatePatientRequest request) {
         PatientResponse updateResponse = patientService.update(request, id);
         ApiResponse<PatientResponse> apiResponse = ApiResponse.<PatientResponse>builder()
                 .data(updateResponse)
@@ -86,8 +80,8 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deletePatient(@PathVariable UUID id){
+    public ResponseEntity<ApiResponse<String>> deletePatient(@PathVariable UUID id) {
         patientService.deletePatient(id);
-        return ResponseEntity.ok(ApiResponse.success("Patient deleted successfully",null));
+        return ResponseEntity.ok(ApiResponse.success("Patient deleted successfully", null));
     }
 }
