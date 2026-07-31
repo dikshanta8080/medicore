@@ -8,6 +8,7 @@ import com.acharya.dikshanta.HospitalManagement.prescription.service.Prescriptio
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class PrescriptionController {
     private final PrescriptionService prescriptionService;
 
     @PostMapping("/consultations/{consultationId}/prescriptions")
+    @PreAuthorize("hasAuthority('PRESCRIPTION_WRITE')")
     public ResponseEntity<ApiResponse<PrescriptionResponse>> createPrescription(
             @PathVariable UUID consultationId,
             @Valid @RequestBody CreatePrescriptionRequest request) {
@@ -28,12 +30,14 @@ public class PrescriptionController {
     }
 
     @GetMapping("/prescriptions/{id}")
+    @PreAuthorize("hasAuthority('PRESCRIPTION_READ')")
     public ResponseEntity<ApiResponse<PrescriptionResponse>> getPrescription(@PathVariable UUID id) {
         var response = prescriptionService.getPrescription(id);
         return ResponseEntity.ok(ApiResponse.success(response, "Prescription fetched successfully"));
     }
 
     @PutMapping("/prescriptions/{id}")
+    @PreAuthorize("hasAuthority('PRESCRIPTION_UPDATE')")
     public ResponseEntity<ApiResponse<PrescriptionResponse>> updatePrescription(
             @PathVariable UUID id,
             @Valid @RequestBody UpdatePrescriptionRequest request) {
@@ -42,6 +46,7 @@ public class PrescriptionController {
     }
 
     @DeleteMapping("/prescriptions/{id}")
+    @PreAuthorize("hasAuthority('PRESCRIPTION_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deletePrescription(@PathVariable UUID id) {
         prescriptionService.deletePrescription(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Prescription deleted successfully"));

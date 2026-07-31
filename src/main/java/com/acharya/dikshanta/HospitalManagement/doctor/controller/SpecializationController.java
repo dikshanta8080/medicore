@@ -7,6 +7,7 @@ import com.acharya.dikshanta.HospitalManagement.doctor.service.SpecializationSer
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class SpecializationController {
     private final SpecializationService specializationService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('SPECIALIZATION_WRITE')")
     public ResponseEntity<ApiResponse<SpecializationResponse>> createSpecialization(
             @Valid @RequestBody CreateSpecializationRequest request) {
         var specializationResponse = specializationService.createSpecialization(request);
@@ -32,18 +34,21 @@ public class SpecializationController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('SPECIALIZATION_READ')")
     public ResponseEntity<ApiResponse<List<SpecializationResponse>>> getSpecializations() {
         var response = specializationService.getSpecializations();
         return ResponseEntity.ok(ApiResponse.success(response, "Specializations fetched successfully"));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('SPECIALIZATION_READ')")
     public ResponseEntity<ApiResponse<SpecializationResponse>> getSpecialization(@PathVariable UUID id) {
         var response = specializationService.getSpecialization(id);
         return ResponseEntity.ok(ApiResponse.success(response, "Specialization fetched successfully"));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('SPECIALIZATION_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deleteSpecialization(@PathVariable UUID id) {
         specializationService.deleteSpecialization(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Specialization deleted successfully"));

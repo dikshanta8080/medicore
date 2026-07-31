@@ -14,6 +14,7 @@ import com.acharya.dikshanta.HospitalManagement.doctor.service.DepartmentService
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,6 +35,7 @@ public class DepartmentController {
     private final DepartmentService departmentService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('DEPARTMENT_WRITE')")
     public ResponseEntity<ApiResponse<DepartmentResponse>> createDepartment(
             @Valid @RequestBody CreateDepartmentRequest request) {
         var departmentResponse = departmentService.createDepartment(request);
@@ -41,6 +43,7 @@ public class DepartmentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('DEPARTMENT_READ')")
     public ResponseEntity<ApiResponse<PagedResponse<DepartmentResponse>>> getDepartments(
             @ModelAttribute PaginationRequest paginationRequest) {
         var pagedResponse = departmentService.getDepartments(paginationRequest.toPageable());
@@ -48,12 +51,14 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('DEPARTMENT_READ')")
     public ResponseEntity<ApiResponse<DepartmentResponse>> getDepartment(@PathVariable UUID id) {
         var departmentResponse = departmentService.getDepartment(id);
         return ResponseEntity.ok().body(ApiResponse.success(departmentResponse, "Department fetched successfully"));
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('DEPARTMENT_UPDATE')")
     public ResponseEntity<ApiResponse<DepartmentResponse>> updateDepartment(
             @RequestBody @Valid UpdateDepartmentRequest request) {
         var departmentResponse = departmentService.updateDepartment(request);
@@ -61,24 +66,28 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('DEPARTMENT_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deleteDepartment(@PathVariable UUID id) {
         departmentService.deleteDepartment(id);
         return ResponseEntity.ok().body(ApiResponse.success(null, "Department deleted successfully"));
     }
 
     @PostMapping("/hod")
+    @PreAuthorize("hasAuthority('DEPARTMENT_WRITE')")
     public ResponseEntity<ApiResponse<DoctorResponse>> assignHod(@RequestBody @Valid AssignHodRequest request) {
         var doctorResponse = departmentService.assignHod(request);
         return ResponseEntity.ok(ApiResponse.success(doctorResponse, "HOD assigned successfully"));
     }
 
     @PatchMapping("/hod")
+    @PreAuthorize("hasAuthority('DEPARTMENT_UPDATE')")
     public ResponseEntity<ApiResponse<DoctorResponse>> replaceHod(@RequestBody @Valid ReplaceHodRequest request) {
         var doctorResponse = departmentService.replaceHod(request);
         return ResponseEntity.ok(ApiResponse.success(doctorResponse, "HOD replaced successfully"));
     }
 
     @DeleteMapping("/hod")
+    @PreAuthorize("hasAuthority('DEPARTMENT_DELETE')")
     public ResponseEntity<ApiResponse<DepartmentResponse>> removeHod(@RequestBody @Valid RemoveHodRequest request) {
         var departmentResponse = departmentService.removeHod(request);
         return ResponseEntity.ok(ApiResponse.success(departmentResponse, "HOD removed successfully"));

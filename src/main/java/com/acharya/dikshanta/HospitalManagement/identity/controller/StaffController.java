@@ -10,6 +10,7 @@ import com.acharya.dikshanta.HospitalManagement.identity.service.StaffService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,12 +30,14 @@ public class StaffController {
     private final StaffService staffService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('STAFF_WRITE')")
     public ResponseEntity<ApiResponse<StaffResponse>> createStaff(@Valid @RequestBody CreateStaffRequest request) {
         var staffResponse = staffService.createStaff(request);
         return ResponseEntity.ok().body(ApiResponse.success(staffResponse, "Staff created successfully"));
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('STAFF_READ')")
     public ResponseEntity<ApiResponse<PagedResponse<StaffResponse>>> getStaffs(
             @ModelAttribute PaginationRequest paginationRequest) {
         var pagedResponse = staffService.getStaffs(paginationRequest.toPageable());
@@ -42,18 +45,21 @@ public class StaffController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('STAFF_READ')")
     public ResponseEntity<ApiResponse<StaffResponse>> getStaff(@PathVariable UUID id) {
         var staffResponse = staffService.getStaff(id);
         return ResponseEntity.ok().body(ApiResponse.success(staffResponse, "Staff fetched successfully"));
     }
 
     @PutMapping
+    @PreAuthorize("hasAuthority('STAFF_UPDATE')")
     public ResponseEntity<ApiResponse<StaffResponse>> updateStaff(@RequestBody @Valid UpdateStaffRequest request) {
         var staffResponse = staffService.updateStaff(request);
         return ResponseEntity.ok().body(ApiResponse.success(staffResponse, "Staff updated successfully"));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('STAFF_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deleteStaff(@PathVariable UUID id) {
         staffService.deleteStaff(id);
         return ResponseEntity.ok().body(ApiResponse.success(null, "Staff deleted successfully"));

@@ -43,4 +43,22 @@ public enum Permission {
     SCHEDULE_WRITE,
     SCHEDULE_UPDATE,
     SCHEDULE_DELETE,
+
+    // ── Appointment ─────────────────────────
+    APPOINTMENT_READ,
+    APPOINTMENT_WRITE,
+    APPOINTMENT_UPDATE,
+    APPOINTMENT_DELETE,
+
+    // ── Consultation ────────────────────────
+    CONSULTATION_READ,
+    CONSULTATION_WRITE,
+    CONSULTATION_UPDATE,
+    CONSULTATION_DELETE,
+
+    // ── Prescription ────────────────────────
+    PRESCRIPTION_READ,
+    PRESCRIPTION_WRITE,
+    PRESCRIPTION_UPDATE,
+    PRESCRIPTION_DELETE,
 }
