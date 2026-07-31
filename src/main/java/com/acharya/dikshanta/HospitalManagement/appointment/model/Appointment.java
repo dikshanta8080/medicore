@@ -45,6 +45,7 @@ public class Appointment extends SoftDeleteEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private AppointmentStatus appointmentStatus = AppointmentStatus.BOOKED;
 
     @ManyToOne(fetch = FetchType.LAZY)
