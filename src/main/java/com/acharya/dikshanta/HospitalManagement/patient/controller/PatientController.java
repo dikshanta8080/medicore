@@ -11,6 +11,7 @@ import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientReposi
 import com.acharya.dikshanta.HospitalManagement.patient.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class PatientController {
     private final PatientService patientService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('PATIENT_WRITE')")
     public ResponseEntity<ApiResponse<PatientResponse>> create(@RequestBody CreatePatientRequest request) {
         PatientResponse patientResponse = patientService.create(request);
         ApiResponse<PatientResponse> apiResponse = ApiResponse.<PatientResponse>builder()
@@ -34,6 +36,7 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('PATIENT_READ')")
     public ResponseEntity<ApiResponse<PatientResponse>> getPatientById(@PathVariable UUID id) {
         PatientResponse patientResponse = patientService.getPatientById(id);
         ApiResponse<PatientResponse> apiResponse = ApiResponse.<PatientResponse>builder()
@@ -45,6 +48,7 @@ public class PatientController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('PATIENT_READ')")
     public ResponseEntity<ApiResponse<PagedResponse<PatientResponse>>> getPatients(
             @ModelAttribute PaginationRequest request,
             @RequestParam(required = false) String patientNumber,
@@ -68,6 +72,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('PATIENT_UPDATE')")
     public ResponseEntity<ApiResponse<PatientResponse>> updatePatient(@PathVariable UUID id,
                                                                       @RequestBody CreatePatientRequest request) {
         PatientResponse updateResponse = patientService.update(request, id);
@@ -80,6 +85,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('PATIENT_DELETE')")
     public ResponseEntity<ApiResponse<String>> deletePatient(@PathVariable UUID id) {
         patientService.deletePatient(id);
         return ResponseEntity.ok(ApiResponse.success("Patient deleted successfully", null));

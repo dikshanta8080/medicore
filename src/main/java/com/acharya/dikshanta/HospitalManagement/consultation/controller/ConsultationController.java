@@ -8,6 +8,7 @@ import com.acharya.dikshanta.HospitalManagement.consultation.service.Consultatio
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class ConsultationController {
     private final ConsultationService consultationService;
 
     @PostMapping("/appointments/{appointmentId}/consultation")
+    @PreAuthorize("hasAuthority('CONSULTATION_WRITE')")
     public ResponseEntity<ApiResponse<ConsultationResponse>> startConsultation(
             @PathVariable UUID appointmentId,
             @Valid @RequestBody CreateConsultationRequest request) {
@@ -28,12 +30,14 @@ public class ConsultationController {
     }
 
     @GetMapping("/consultations/{id}")
+    @PreAuthorize("hasAuthority('CONSULTATION_READ')")
     public ResponseEntity<ApiResponse<ConsultationResponse>> getConsultation(@PathVariable UUID id) {
         var response = consultationService.getConsultation(id);
         return ResponseEntity.ok(ApiResponse.success(response, "Consultation fetched successfully"));
     }
 
     @PutMapping("/consultations/{id}")
+    @PreAuthorize("hasAuthority('CONSULTATION_UPDATE')")
     public ResponseEntity<ApiResponse<ConsultationResponse>> updateConsultation(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateConsultationRequest request) {
@@ -42,6 +46,7 @@ public class ConsultationController {
     }
 
     @PatchMapping("/consultations/{id}/complete")
+    @PreAuthorize("hasAuthority('CONSULTATION_UPDATE')")
     public ResponseEntity<ApiResponse<ConsultationResponse>> completeConsultation(@PathVariable UUID id) {
         var response = consultationService.completeConsultation(id);
         return ResponseEntity.ok(ApiResponse.success(response, "Consultation completed successfully"));
