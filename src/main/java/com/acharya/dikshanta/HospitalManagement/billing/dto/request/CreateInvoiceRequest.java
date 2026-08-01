@@ -4,16 +4,19 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
+@Builder
 public record CreateInvoiceRequest(
 
         @NotNull(message = "Patient ID is required")
-        Long patientId,
+        UUID patientId,
 
-        Long appointmentId,
+        UUID appointmentId,
 
         @NotEmpty(message = "Invoice must contain at least one item")
         @Valid
