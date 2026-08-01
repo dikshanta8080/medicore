@@ -34,7 +34,7 @@ public class InvoiceMapper {
                 .totalAmount(invoice.getTotalAmount())
                 .status(invoice.getInvoiceStatus())
                 .items(itemResponses)
-                .createdAt(LocalDateTime.now())
+                .createdAt(invoice.getCreatedAt())
                 .build();
     }
 }

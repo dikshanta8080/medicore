@@ -17,8 +17,6 @@ public class PaymentMapper {
                 .transactionId(request.transactionId())
                 .transactionDate(request.transactionDate())
                 .invoice(invoice)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
                 .build();
     }
 
