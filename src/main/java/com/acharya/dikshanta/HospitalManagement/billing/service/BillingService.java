@@ -41,9 +41,7 @@ public class BillingService {
     private final PaymentMapper paymentMapper;
     private final InvoiceItemMapper invoiceItemMapper;
 
-    // ------------------------------------------------------------------
     // 1. MANUAL INVOICE CREATION
-    // ------------------------------------------------------------------
     @Transactional
     public InvoiceResponse createInvoice(CreateInvoiceRequest request) {
         Patient patient = patientRepository.findById(request.patientId())
@@ -93,10 +91,7 @@ public class BillingService {
         return invoiceMapper.toResponse(savedInvoice);
     }
 
-    // ------------------------------------------------------------------
-    // 2. AUTOMATIC INVOICE GENERATION (Triggered by Appointment Event)
-    // ------------------------------------------------------------------
-    @Transactional
+    // 2. AUTOMATIC INVOICE GENERATION
     public void createInvoiceFromAppointment(Appointment appointment) {
         if (invoiceRepository.existsByAppointmentId(appointment.getId())) {
             return;
@@ -138,9 +133,7 @@ public class BillingService {
         invoiceRepository.save(invoice);
     }
 
-    // ------------------------------------------------------------------
     // 3. READ OPERATIONS
-    // ------------------------------------------------------------------
     @Transactional(readOnly = true)
     public InvoiceResponse getInvoiceById(UUID id) {
         Invoice invoice = invoiceRepository.findById(id)
@@ -154,9 +147,7 @@ public class BillingService {
                 .map(invoiceMapper::toResponse);
     }
 
-    // ------------------------------------------------------------------
     // 4. RECORD PAYMENT & UPDATE BALANCES / STATUS
-    // ------------------------------------------------------------------
     @Transactional
     public PaymentResponse recordPayment(UUID invoiceId, RecordPaymentRequest request) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
