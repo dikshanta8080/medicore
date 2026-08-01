@@ -14,7 +14,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 
     Optional<Invoice> findByInvoiceNumber(String invoiceNumber);
 
-    Page<Invoice> findByPatientId(Long patientId, Pageable pageable);
+    Page<Invoice> findByPatientId(UUID patientId, Pageable pageable);
 
-    boolean existsByAppointmentId(Long appointmentId);
+    boolean existsByAppointmentId(UUID appointmentId);
 }

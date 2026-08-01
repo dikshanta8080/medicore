@@ -4,14 +4,12 @@ import com.acharya.dikshanta.HospitalManagement.appointment.model.Appointment;
 import com.acharya.dikshanta.HospitalManagement.common.model.SoftDeleteEntity;
 import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,8 +36,9 @@ public class Invoice extends SoftDeleteEntity {
     @Column(name = "tax_amount", nullable = false)
     private BigDecimal taxAmount;
 
+    @Builder.Default
     @Column(name = "amount_paid", nullable = false)
-    private BigDecimal amountPaid;
+    private BigDecimal amountPaid = BigDecimal.ZERO;
 
     @Column(name = "balance_due", nullable = false)
     private BigDecimal balanceDue;
@@ -48,11 +47,13 @@ public class Invoice extends SoftDeleteEntity {
     private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     @Column(name = "status", nullable = false)
-    private Status invoiceStatus;
+    private Status invoiceStatus = Status.PENDING;
 
+    @Builder.Default
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InvoiceItem> invoiceItems;
+    private List<InvoiceItem> invoiceItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
