@@ -10,7 +10,9 @@ import com.acharya.dikshanta.HospitalManagement.common.dto.PaginationRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -74,5 +76,18 @@ public class BillingController {
                 .status(true)
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+    }
+
+    @GetMapping("/payments/{paymentId}/receipt")
+    public ResponseEntity<byte[]> downloadReceipt(@PathVariable UUID paymentId) {
+        byte[] pdfBytes = billingService.generatePaymentReceiptPdf(paymentId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "receipt-" + paymentId + ".pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 }

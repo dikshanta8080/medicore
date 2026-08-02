@@ -31,8 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -45,6 +47,8 @@ public class BillingService {
     private final InvoiceMapper invoiceMapper;
     private final PaymentMapper paymentMapper;
     private final InvoiceItemMapper invoiceItemMapper;
+    private final PdfGeneratorService pdfGeneratorService;
+
     @PersistenceContext
     private final EntityManager entityManager;
 
@@ -192,6 +196,25 @@ public class BillingService {
 
         invoiceRepository.save(invoice);
         return paymentMapper.toResponse(savedPayment);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] generatePaymentReceiptPdf(UUID paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with ID: " + paymentId));
+
+        Map<String, Object> variables = Map.of(
+                "receiptNumber", "REC-" + payment.getId().toString().substring(0, 8).toUpperCase(),
+                "invoiceNumber", payment.getInvoice().getInvoiceNumber(),
+                "patientName", payment.getInvoice().getPatient().getFullName(),
+                "paymentDate", payment.getTransactionDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                "paymentMethod", payment.getPaymentMethod().name(),
+                "transactionId", payment.getTransactionId() != null ? payment.getTransactionId() : "N/A",
+                "amountPaid", payment.getAmountPaid(),
+                "remainingBalance", payment.getInvoice().getBalanceDue()
+        );
+
+        return pdfGeneratorService.generatePdfFromTemplate("receipt", variables);
     }
 
     private String generateInvoiceNumber() {
