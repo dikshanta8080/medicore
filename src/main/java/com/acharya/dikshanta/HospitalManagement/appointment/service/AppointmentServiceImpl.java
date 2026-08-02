@@ -4,7 +4,7 @@ import com.acharya.dikshanta.HospitalManagement.appointment.dto.request.CreateAp
 import com.acharya.dikshanta.HospitalManagement.appointment.dto.request.RescheduleAppointmentRequest;
 import com.acharya.dikshanta.HospitalManagement.appointment.dto.response.AppointmentResponse;
 import com.acharya.dikshanta.HospitalManagement.appointment.enums.AppointmentStatus;
-import com.acharya.dikshanta.HospitalManagement.appointment.event.AppointmentCompletedEvent;
+import com.acharya.dikshanta.HospitalManagement.appointment.event.AppointmentBookedEvent;
 import com.acharya.dikshanta.HospitalManagement.appointment.mapper.AppointmentMapper;
 import com.acharya.dikshanta.HospitalManagement.appointment.model.Appointment;
 import com.acharya.dikshanta.HospitalManagement.appointment.repository.AppointmentRepository;
@@ -66,7 +66,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
         appointment.setBookedBy(staff);
 
-        return appointmentMapper.toResponse(appointmentRepository.save(appointment));
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        applicationEventPublisher.publishEvent(new AppointmentBookedEvent(savedAppointment.getId()));
+
+        return appointmentMapper.toResponse(savedAppointment);
     }
 
     @Override
@@ -163,7 +167,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
-        applicationEventPublisher.publishEvent(new AppointmentCompletedEvent(savedAppointment));
+
     }
 
 
