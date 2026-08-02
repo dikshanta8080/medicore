@@ -4,6 +4,7 @@ import com.acharya.dikshanta.HospitalManagement.appointment.dto.request.CreateAp
 import com.acharya.dikshanta.HospitalManagement.appointment.dto.request.RescheduleAppointmentRequest;
 import com.acharya.dikshanta.HospitalManagement.appointment.dto.response.AppointmentResponse;
 import com.acharya.dikshanta.HospitalManagement.appointment.enums.AppointmentStatus;
+import com.acharya.dikshanta.HospitalManagement.appointment.event.AppointmentCompletedEvent;
 import com.acharya.dikshanta.HospitalManagement.appointment.mapper.AppointmentMapper;
 import com.acharya.dikshanta.HospitalManagement.appointment.model.Appointment;
 import com.acharya.dikshanta.HospitalManagement.appointment.repository.AppointmentRepository;
@@ -21,6 +22,7 @@ import com.acharya.dikshanta.HospitalManagement.identity.repository.StaffReposit
 import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
 import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final StaffRepository staffRepository;
     private final PatientRepository patientRepository;
     private final DoctorScheduleRepository doctorScheduleRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -151,6 +154,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return appointmentMapper.toResponse(appointmentRepository.save(appointment));
     }
+
+    @Transactional
+    public void completeAppointment(UUID appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
+
+        appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        applicationEventPublisher.publishEvent(new AppointmentCompletedEvent(savedAppointment));
+    }
+
+
 
     private Appointment findAppointment(UUID appointmentId) {
         return appointmentRepository.findById(appointmentId)
