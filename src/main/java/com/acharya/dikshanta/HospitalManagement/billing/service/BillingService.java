@@ -1,5 +1,6 @@
 package com.acharya.dikshanta.HospitalManagement.billing.service;
 
+import com.acharya.dikshanta.HospitalManagement.appointment.event.AppointmentBookedEvent;
 import com.acharya.dikshanta.HospitalManagement.appointment.model.Appointment;
 import com.acharya.dikshanta.HospitalManagement.billing.dto.request.AddInvoiceItemRequest;
 import com.acharya.dikshanta.HospitalManagement.billing.dto.request.CreateInvoiceRequest;
@@ -16,18 +17,24 @@ import com.acharya.dikshanta.HospitalManagement.billing.model.Payment;
 import com.acharya.dikshanta.HospitalManagement.billing.model.Status;
 import com.acharya.dikshanta.HospitalManagement.billing.repository.InvoiceRepository;
 import com.acharya.dikshanta.HospitalManagement.billing.repository.PaymentRepository;
+import com.acharya.dikshanta.HospitalManagement.common.exceptions.ResourceNotFoundException;
 import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
 import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -40,6 +47,10 @@ public class BillingService {
     private final InvoiceMapper invoiceMapper;
     private final PaymentMapper paymentMapper;
     private final InvoiceItemMapper invoiceItemMapper;
+    private final PdfGeneratorService pdfGeneratorService;
+
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     // 1. MANUAL INVOICE CREATION
     @Transactional
@@ -92,8 +103,15 @@ public class BillingService {
     }
 
     // 2. AUTOMATIC INVOICE GENERATION
-    public void createInvoiceFromAppointment(Appointment appointment) {
-        if (invoiceRepository.existsByAppointmentId(appointment.getId())) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void createInvoiceFromAppointment(AppointmentBookedEvent event) {
+
+        Appointment appointment = entityManager.find(Appointment.class, event.appointmentId());
+        if(appointment == null){
+            throw new ResourceNotFoundException("appointment is null");
+        }
+
+        if (invoiceRepository.existsByAppointmentId(event.appointmentId())) {
             return;
         }
 
@@ -178,6 +196,25 @@ public class BillingService {
 
         invoiceRepository.save(invoice);
         return paymentMapper.toResponse(savedPayment);
+    }
+
+    @Transactional(readOnly = true)
+    public byte[] generatePaymentReceiptPdf(UUID paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with ID: " + paymentId));
+
+        Map<String, Object> variables = Map.of(
+                "receiptNumber", "REC-" + payment.getId().toString().substring(0, 8).toUpperCase(),
+                "invoiceNumber", payment.getInvoice().getInvoiceNumber(),
+                "patientName", payment.getInvoice().getPatient().getFullName(),
+                "paymentDate", payment.getTransactionDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                "paymentMethod", payment.getPaymentMethod().name(),
+                "transactionId", payment.getTransactionId() != null ? payment.getTransactionId() : "N/A",
+                "amountPaid", payment.getAmountPaid(),
+                "remainingBalance", payment.getInvoice().getBalanceDue()
+        );
+
+        return pdfGeneratorService.generatePdfFromTemplate("receipt", variables);
     }
 
     private String generateInvoiceNumber() {
