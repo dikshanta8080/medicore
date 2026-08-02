@@ -217,6 +217,22 @@ public class BillingService {
         return pdfGeneratorService.generatePdfFromTemplate("receipt", variables);
     }
 
+    private Invoice buildInvoice(Appointment appointment, BigDecimal subTotal, BigDecimal discountAmount, BigDecimal taxAmount, BigDecimal totalAmount) {
+        return Invoice.builder()
+                .invoiceNumber(generateInvoiceNumber())
+                .patient(appointment.getPatient())
+                .appointment(appointment)
+                .subTotal(subTotal)
+                .discountAmount(discountAmount)
+                .taxAmount(taxAmount)
+                .totalAmount(totalAmount)
+                .amountPaid(BigDecimal.ZERO)
+                .balanceDue(totalAmount)
+                .invoiceStatus(Status.PENDING)
+                .invoiceItems(new ArrayList<>())
+                .build();
+    }
+
     private String generateInvoiceNumber() {
         return "INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
