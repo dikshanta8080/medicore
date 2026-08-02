@@ -1,6 +1,8 @@
 package com.acharya.dikshanta.HospitalManagement.patient.service;
 
 import com.acharya.dikshanta.HospitalManagement.common.dto.PagedResponse;
+import com.acharya.dikshanta.HospitalManagement.common.enums.BloodGroup;
+import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.BusinessException;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.ResourceNotFoundException;
 import com.acharya.dikshanta.HospitalManagement.patient.dto.request.CreatePatientRequest;
@@ -55,7 +57,12 @@ public class PatientService {
     }
 
     @Transactional
-    public PagedResponse<PatientResponse> getAllPatients(Pageable pageable) {
+    public PagedResponse<PatientResponse> getAllPatients(String patientNumber,
+                                                         String fullName,
+                                                         String phoneNumber,
+                                                         Gender gender,
+                                                         BloodGroup bloodGroup,
+                                                         Pageable pageable) {
         Page<Patient> patientPage = patientRepository.findAll(pageable);
         Page<PatientResponse> responsePage = patientPage.map(patientMapper::toResponse);
         return PagedResponse.toPagedResponse(responsePage);
