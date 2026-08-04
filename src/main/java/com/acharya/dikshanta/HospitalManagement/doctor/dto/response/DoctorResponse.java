@@ -4,9 +4,11 @@ import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Builder
 public record DoctorResponse(
+        UUID id,
         String name,
         String email,
         String username,

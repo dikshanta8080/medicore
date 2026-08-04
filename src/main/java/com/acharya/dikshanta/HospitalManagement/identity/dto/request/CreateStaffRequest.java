@@ -12,6 +12,6 @@ public record CreateStaffRequest(
         String address,
         String phoneNumber,
         Gender gender
-
 ) {
 }
+
