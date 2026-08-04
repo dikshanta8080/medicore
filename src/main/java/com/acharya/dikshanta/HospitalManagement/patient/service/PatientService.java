@@ -39,32 +39,46 @@ public class PatientService {
 
     @Transactional
     public PatientResponse update(CreatePatientRequest request, UUID id) {
+
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Patient not found with the provided id"));
+                .orElseThrow(() ->
+                        new BusinessException("Patient not found with the provided id"));
+
         if (request.phoneNumber() != null) {
             patient.setPhoneNumber(request.phoneNumber());
         }
+
         if (request.allergies() != null) {
             patient.setAllergies(request.allergies());
         }
+
         if (request.medicalHistory() != null) {
             patient.setMedicalHistory(request.medicalHistory());
         }
+
         if (request.fullName() != null) {
             patient.setFullName(request.fullName());
         }
-        return patientMapper.toResponse(patient);
+
+        Patient updatedPatient = patientRepository.save(patient);
+
+        return patientMapper.toResponse(updatedPatient);
     }
 
-    @Transactional
-    public PagedResponse<PatientResponse> getAllPatients(String patientNumber,
-                                                         String fullName,
-                                                         String phoneNumber,
-                                                         Gender gender,
-                                                         BloodGroup bloodGroup,
-                                                         Pageable pageable) {
+    @Transactional(readOnly = true)
+    public PagedResponse<PatientResponse> getAllPatients(
+            String patientNumber,
+            String fullName,
+            String phoneNumber,
+            Gender gender,
+            BloodGroup bloodGroup,
+            Pageable pageable) {
+
         Page<Patient> patientPage = patientRepository.findAll(pageable);
-        Page<PatientResponse> responsePage = patientPage.map(patientMapper::toResponse);
+
+        Page<PatientResponse> responsePage =
+                patientPage.map(patientMapper::toResponse);
+
         return PagedResponse.toPagedResponse(responsePage);
     }
 

@@ -66,6 +66,7 @@ public class PatientController {
                 request.toPageable()
         );
 
+
         ApiResponse<PagedResponse<PatientResponse>> apiResponse =
                 ApiResponse.<PagedResponse<PatientResponse>>builder()
                         .data(patientPage)
