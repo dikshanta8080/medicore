@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public LoginResponse loginUser(LoginRequest loginRequest) {
         log.info("Authenticating user: {}", loginRequest.username());
         UserPrincipal principal = authenticate(loginRequest);
@@ -34,7 +36,7 @@ public class AuthService {
         User user = getUser(principal.getId());
         UserResponse userResponse = buildUserResponse(user);
 
-        log.info("User '{}' authenticated successfully", user.getUsername());
+        log.info("User '{}' authenticated successfully with role '{}'", user.getUsername(), user.getRole());
         return buildLoginResponse(userResponse, token);
     }
 
@@ -56,6 +58,7 @@ public class AuthService {
                 .userId(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .role(user.getRole())
                 .name(staff != null ? staff.getName() : null)
                 .phoneNumber(staff != null ? staff.getPhoneNumber() : null)
                 .gender(staff != null ? staff.getGender() : null)

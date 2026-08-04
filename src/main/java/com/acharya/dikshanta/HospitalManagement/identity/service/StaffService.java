@@ -32,7 +32,7 @@ public class StaffService {
     @Transactional
     public StaffResponse createStaff(CreateStaffRequest request) {
         checkIfStaffAlreadyExists(request);
-        User user = buildUser(request);
+        User user = buildUser(request, Role.RECEPTIONIST);
         Staff staff = staffMapper.toStaff(request);
         staff.setUser(userRepository.save(user));
         return staffMapper.toResponse(staffRepository.save(staff));
@@ -40,8 +40,13 @@ public class StaffService {
 
     @Transactional
     public Staff saveStaff(CreateStaffRequest request) {
+        return saveStaff(request, Role.RECEPTIONIST);
+    }
+
+    @Transactional
+    public Staff saveStaff(CreateStaffRequest request, Role role) {
         checkIfStaffAlreadyExists(request);
-        User user = buildUser(request);
+        User user = buildUser(request, role);
         Staff staff = staffMapper.toStaff(request);
         staff.setUser(userRepository.save(user));
         return staffRepository.save(staff);
@@ -98,12 +103,12 @@ public class StaffService {
         }
     }
 
-    private User buildUser(CreateStaffRequest request) {
+    private User buildUser(CreateStaffRequest request, Role role) {
         return User.builder()
                 .email(request.email())
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.RECEPTIONIST)
+                .role(role)
                 .build();
     }
 

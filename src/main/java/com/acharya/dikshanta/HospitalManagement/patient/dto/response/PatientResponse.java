@@ -1,8 +1,10 @@
 package com.acharya.dikshanta.HospitalManagement.patient.dto.response;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record PatientResponse(
+        UUID id,
         String patientNumber,
         String fullName,
         String address,
@@ -18,3 +20,4 @@ public record PatientResponse(
         String allergies
         ) {
 }
+

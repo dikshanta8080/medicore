@@ -58,6 +58,11 @@ public class PatientController {
             @RequestParam(required = false) BloodGroup bloodGroup) {
 
         PagedResponse<PatientResponse> patientPage = patientService.getAllPatients(
+                patientNumber,
+                fullName,
+                phoneNumber,
+                gender,
+                bloodGroup,
                 request.toPageable()
         );
 

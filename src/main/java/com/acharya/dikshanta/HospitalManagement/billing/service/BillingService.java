@@ -10,11 +10,7 @@ import com.acharya.dikshanta.HospitalManagement.billing.dto.response.PaymentResp
 import com.acharya.dikshanta.HospitalManagement.billing.mapper.InvoiceItemMapper;
 import com.acharya.dikshanta.HospitalManagement.billing.mapper.InvoiceMapper;
 import com.acharya.dikshanta.HospitalManagement.billing.mapper.PaymentMapper;
-import com.acharya.dikshanta.HospitalManagement.billing.model.Invoice;
-import com.acharya.dikshanta.HospitalManagement.billing.model.InvoiceItem;
-import com.acharya.dikshanta.HospitalManagement.billing.model.ItemType;
-import com.acharya.dikshanta.HospitalManagement.billing.model.Payment;
-import com.acharya.dikshanta.HospitalManagement.billing.model.Status;
+import com.acharya.dikshanta.HospitalManagement.billing.model.*;
 import com.acharya.dikshanta.HospitalManagement.billing.repository.InvoiceRepository;
 import com.acharya.dikshanta.HospitalManagement.billing.repository.PaymentRepository;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.ResourceNotFoundException;
@@ -107,7 +103,7 @@ public class BillingService {
     public void createInvoiceFromAppointment(AppointmentBookedEvent event) {
 
         Appointment appointment = entityManager.find(Appointment.class, event.appointmentId());
-        if(appointment == null){
+        if (appointment == null) {
             throw new ResourceNotFoundException("appointment is null");
         }
 
@@ -124,26 +120,14 @@ public class BillingService {
         BigDecimal taxAmount = subTotal.multiply(new BigDecimal("0.05")).setScale(2, RoundingMode.HALF_UP);
         BigDecimal totalAmount = subTotal.add(taxAmount).subtract(discountAmount);
 
-        Invoice invoice = Invoice.builder()
-                .invoiceNumber(generateInvoiceNumber())
-                .patient(appointment.getPatient())
-                .appointment(appointment)
-                .subTotal(subTotal)
-                .discountAmount(discountAmount)
-                .taxAmount(taxAmount)
-                .totalAmount(totalAmount)
-                .amountPaid(BigDecimal.ZERO)
-                .balanceDue(totalAmount)
-                .invoiceStatus(Status.PENDING)
-                .invoiceItems(new ArrayList<>())
-                .build();
+        Invoice invoice = buildInvoice(appointment, subTotal, discountAmount, taxAmount, totalAmount);
 
         InvoiceItem consultationItem = InvoiceItem.builder()
                 .description("Consultation Fee - " + (appointment.getDoctor() != null ? appointment.getDoctor().getLicenseNumber() : "General"))
                 .unitPrice(consultationFee)
                 .quantity(1L)
                 .lineTotal(consultationFee)
-                    .itemType(ItemType.DOCTOR_FEE)
+                .itemType(ItemType.DOCTOR_FEE)
                 .invoice(invoice)
                 .build();
 
