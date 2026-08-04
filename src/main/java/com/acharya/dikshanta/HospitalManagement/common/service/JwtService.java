@@ -5,6 +5,7 @@ import com.acharya.dikshanta.HospitalManagement.identity.model.UserPrincipal;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.DecodingException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -22,7 +24,15 @@ public class JwtService {
     private final AppData appData;
 
     private SecretKey generateKey() {
-        byte[] bytes = Decoders.BASE64.decode(appData.getJwt().getSecret());
+        String secret = appData.getJwt().getSecret();
+        byte[] bytes;
+
+        try {
+            bytes = Decoders.BASE64.decode(secret);
+        } catch (DecodingException exception) {
+            bytes = secret.getBytes(StandardCharsets.UTF_8);
+        }
+
         return Keys.hmacShaKeyFor(bytes);
     }
 
