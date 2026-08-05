@@ -12,6 +12,6 @@ server:
     context-path: /api
 logging:
   level:
-    com.acharya.dikshanta.HospitalManagement: DEBUG
+    com.acharya.dikshanta.HospitalManagement: INFO
 
 

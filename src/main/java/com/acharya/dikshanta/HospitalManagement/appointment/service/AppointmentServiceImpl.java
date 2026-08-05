@@ -56,6 +56,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Department department = getDepartment(request.departmentId());
         Staff staff = getStaff();
 
+        validateDoctorBelongsToDepartment(doctor, department);
         validateDoctorAvailability(doctor.getId(), request.appointmentDate(), request.appointmentTime());
         validateNoConflictingAppointment(doctor.getId(), request.appointmentDate(), request.appointmentTime(), null);
 
@@ -208,6 +209,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         Days dayOfWeek = toDays(date);
         if (!doctorScheduleRepository.isDoctorAvailableAt(doctorId, dayOfWeek, time)) {
             throw new BusinessException("Doctor is not available at the requested date and time");
+        }
+    }
+
+    private void validateDoctorBelongsToDepartment(Doctor doctor, Department department) {
+        if (!doctor.getDepartment().getId().equals(department.getId())) {
+            throw new BusinessException("Selected doctor does not belong to the selected department");
         }
     }
 
