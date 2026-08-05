@@ -182,18 +182,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Staff getStaff() {
         UUID staffId = LoggedInUser.getStaffId();
         if (staffId == null) {
-<<<<<<< HEAD
-            throw new BusinessException("Logged-in user is not linked to a staff profile");
+            return null;
         }
 
         return staffRepository.findById(staffId)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
-=======
-            return null;
-        }
-        return staffRepository.findById(staffId)
                 .orElse(null);
->>>>>>> fae4a07ec3a2d37eea668368568620e5dccc6aa1
     }
 
     private Department getDepartment(UUID departmentId) {
