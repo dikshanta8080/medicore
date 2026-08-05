@@ -43,7 +43,12 @@ public class DoctorService {
 
     @Transactional(readOnly = true)
     public List<AppointmentResponse> getMyTodayAppointments() {
-        Doctor doctor = doctorRepository.findByStaffId(LoggedInUser.getStaffId())
+        UUID staffId = LoggedInUser.getStaffId();
+        if (staffId == null) {
+            throw new ResourceNotFoundException("Doctor profile not found for the logged-in user");
+        }
+
+        Doctor doctor = doctorRepository.findByStaffId(staffId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor profile not found for the logged-in user"));
         return appointmentService.getTodayAppointmentsByDoctorId(doctor.getId());
     }
