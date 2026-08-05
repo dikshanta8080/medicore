@@ -3,7 +3,6 @@ package com.acharya.dikshanta.HospitalManagement.identity.config;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.handlers.CustomAccessDeniedHandler;
 import com.acharya.dikshanta.HospitalManagement.common.exceptions.handlers.CustomAuthenticationEntryPoint;
 import com.acharya.dikshanta.HospitalManagement.common.filter.JwtFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,11 +72,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
-    }
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
     }
 
     @Bean

@@ -20,6 +20,7 @@ import com.acharya.dikshanta.HospitalManagement.doctor.repository.Specialization
 import com.acharya.dikshanta.HospitalManagement.identity.dto.request.CreateStaffRequest;
 import com.acharya.dikshanta.HospitalManagement.identity.model.Staff;
 import com.acharya.dikshanta.HospitalManagement.identity.service.StaffService;
+import com.acharya.dikshanta.HospitalManagement.common.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public class DoctorService {
     @Transactional
     public DoctorResponse createDoctor(CreateDoctorRequest request) {
         CreateStaffRequest staffRequest = buildStaffRequest(request);
-        Staff staff = staffService.saveStaff(staffRequest);
+        Staff staff = staffService.saveStaff(staffRequest, Role.DOCTOR);
 
         Department department = departmentRepository.findById(request.departmentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found"));

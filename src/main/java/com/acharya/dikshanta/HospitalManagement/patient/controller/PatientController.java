@@ -57,15 +57,15 @@ public class PatientController {
             @RequestParam(required = false) Gender gender,
             @RequestParam(required = false) BloodGroup bloodGroup) {
 
-        PagedResponse<PatientResponse> patientPage =
-                patientService.getAllPatients(
-                        patientNumber,
-                        fullName,
-                        phoneNumber,
-                        gender,
-                        bloodGroup,
-                        request.toPageable()
-                );
+        PagedResponse<PatientResponse> patientPage = patientService.getAllPatients(
+                patientNumber,
+                fullName,
+                phoneNumber,
+                gender,
+                bloodGroup,
+                request.toPageable()
+        );
+
 
         ApiResponse<PagedResponse<PatientResponse>> apiResponse =
                 ApiResponse.<PagedResponse<PatientResponse>>builder()

@@ -23,6 +23,7 @@ public class DoctorMapper {
         User user = staff != null ? staff.getUser() : null;
 
         return DoctorResponse.builder()
+                .id(doctor.getId())
                 .name(staff != null ? staff.getName() : null)
                 .email(user != null ? user.getEmail() : null)
                 .username(user != null ? user.getUsername() : null)
