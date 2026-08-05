@@ -64,7 +64,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setDoctor(doctor);
         appointment.setDepartment(department);
         appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
-        appointment.setBookedBy(staff);
+        if (staff != null) {
+            appointment.setBookedBy(staff);
+        }
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
 
@@ -178,8 +180,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Staff getStaff() {
-        return staffRepository.findById(LoggedInUser.getStaffId())
-                .orElseThrow(() -> new ResourceNotFoundException("Staff not found"));
+        UUID staffId = LoggedInUser.getStaffId();
+        if (staffId == null) {
+            return null;
+        }
+        return staffRepository.findById(staffId)
+                .orElse(null);
     }
 
     private Department getDepartment(UUID departmentId) {
