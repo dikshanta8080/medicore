@@ -1,5 +1,6 @@
 package com.acharya.dikshanta.HospitalManagement.doctor.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.acharya.dikshanta.HospitalManagement.common.enums.Days;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,7 +12,11 @@ public record UpdateDoctorScheduleRequest(
         UUID scheduleId,
 
         Days dayOfWeek,
+
+        @JsonFormat(pattern = "HH:mm:ss")
         LocalTime startTime,
+
+        @JsonFormat(pattern = "HH:mm:ss")
         LocalTime endTime
 ) {
 }

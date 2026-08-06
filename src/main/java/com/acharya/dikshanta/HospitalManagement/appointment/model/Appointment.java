@@ -24,14 +24,17 @@ public class Appointment extends SoftDeleteEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Department department;
 
     @Column(nullable = false)
@@ -50,6 +53,7 @@ public class Appointment extends SoftDeleteEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booked_by")
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Staff bookedBy;
     
     @OneToOne(mappedBy = "appointment")

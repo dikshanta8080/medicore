@@ -28,6 +28,7 @@ public class StaffService {
     private final UserRepository userRepository;
     private final StaffRepository staffRepository;
     private final PasswordEncoder passwordEncoder;
+    private final com.acharya.dikshanta.HospitalManagement.doctor.repository.DoctorRepository doctorRepository;
 
     @Transactional
     public StaffResponse createStaff(CreateStaffRequest request) {
@@ -88,10 +89,20 @@ public class StaffService {
     @Transactional
     public void deleteStaff(UUID id) {
         Staff staff = findStaff(id);
-        if (staff.getUser() != null) {
-            userRepository.delete(staff.getUser());
-        }
+        doctorRepository.findByStaffId(id).ifPresent(doctor -> {
+            doctorRepository.delete(doctor);
+        });
+        User user = staff.getUser();
         staffRepository.delete(staff);
+        if (user != null) {
+            try {
+                userRepository.delete(user);
+            } catch (Exception e) {
+                // Soft delete user flag if referenced in audit trails
+                user.setDeleted(true);
+                userRepository.save(user);
+            }
+        }
     }
 
     private void checkIfStaffAlreadyExists(CreateStaffRequest request) {

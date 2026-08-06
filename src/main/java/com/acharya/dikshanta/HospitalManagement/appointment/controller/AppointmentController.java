@@ -48,7 +48,7 @@ public class AppointmentController {
     @GetMapping
     @PreAuthorize("hasAuthority('APPOINTMENT_READ')")
     public ResponseEntity<ApiResponse<List<AppointmentResponse>>> getAppointmentsByDate(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         var responses = appointmentService.getAppointmentsByDate(date);
         return ResponseEntity.ok(ApiResponse.success(responses, "Appointments fetched successfully"));
     }

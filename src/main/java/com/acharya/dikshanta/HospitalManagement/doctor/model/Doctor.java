@@ -30,14 +30,17 @@ public class Doctor extends SoftDeleteEntity {
 
     @ManyToOne
     @JoinColumn(name = "specialization_id", nullable = false)
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Specialization specialization;
 
     @OneToOne
     @JoinColumn(name = "staff_id", unique = true)
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Staff staff;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private Department department;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)

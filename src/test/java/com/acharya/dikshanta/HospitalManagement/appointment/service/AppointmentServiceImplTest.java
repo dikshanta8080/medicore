@@ -109,6 +109,7 @@ class AppointmentServiceImplTest {
         Department department = new Department();
         department.setId(departmentId);
         department.setName("Laboratory");
+        doctor.setDepartment(department);
 
         Appointment appointment = Appointment.builder()
                 .patient(patient)

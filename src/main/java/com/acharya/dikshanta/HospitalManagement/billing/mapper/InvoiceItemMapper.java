@@ -11,9 +11,12 @@ import java.math.BigDecimal;
 public class InvoiceItemMapper {
     public InvoiceItem toEntity(AddInvoiceItemRequest request){
         BigDecimal lineTotal = request.unitPrice().multiply(BigDecimal.valueOf(request.quantity()));
+        com.acharya.dikshanta.HospitalManagement.billing.model.ItemType type = request.itemType() != null 
+                ? request.itemType() 
+                : com.acharya.dikshanta.HospitalManagement.billing.model.ItemType.PROCEDURE;
         return InvoiceItem.builder()
                 .description(request.description())
-                .itemType(request.itemType())
+                .itemType(type)
                 .quantity(request.quantity())
                 .unitPrice(request.unitPrice())
                 .lineTotal(lineTotal)

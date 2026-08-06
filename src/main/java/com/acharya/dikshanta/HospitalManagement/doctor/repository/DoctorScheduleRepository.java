@@ -30,6 +30,8 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
             @Param("excludeId") UUID excludeId
     );
 
+    boolean existsByDoctorId(UUID doctorId);
+
     @Query("""
             SELECT COUNT(s) > 0 FROM DoctorSchedule s
             WHERE s.doctor.id = :doctorId

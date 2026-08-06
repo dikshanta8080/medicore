@@ -21,6 +21,5 @@ public record AddInvoiceItemRequest(
         @Min(value = 1, message = "Quantity must be at least 1")
         Long quantity,
 
-        @NotNull(message = "Item type is required")
         ItemType itemType
 ) {}

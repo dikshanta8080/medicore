@@ -38,7 +38,7 @@ public class DoctorSpecification {
             }
 
             if (request.day() != null || request.availableAt() != null) {
-                var scheduleJoin = root.join("schedules", JoinType.INNER);
+                var scheduleJoin = root.join("schedules", JoinType.LEFT);
 
                 if (request.day() != null) {
                     predicates.add(cb.equal(scheduleJoin.get("dayOfWeek"), request.day()));

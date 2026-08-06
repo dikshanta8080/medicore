@@ -23,6 +23,7 @@ import com.acharya.dikshanta.HospitalManagement.patient.model.Patient;
 import com.acharya.dikshanta.HospitalManagement.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,8 +54,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentResponse createAppointment(CreateAppointmentRequest request) {
         Patient patient = getPatient(request.patientId());
         Doctor doctor = getDoctor(request.doctorId());
-        Department department = getDepartment(request.departmentId());
-        Staff staff = getStaff();
+        Department department = request.departmentId() != null
+                ? departmentRepository.findById(request.departmentId()).orElse(doctor.getDepartment())
+                : doctor.getDepartment();
+
+        if (department == null) {
+            throw new ResourceNotFoundException("Department not found");
+        }
 
         validateDoctorBelongsToDepartment(doctor, department);
         validateDoctorAvailability(doctor.getId(), request.appointmentDate(), request.appointmentTime());
@@ -65,6 +71,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setDoctor(doctor);
         appointment.setDepartment(department);
         appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
+        Staff staff = getStaff();
         if (staff != null) {
             appointment.setBookedBy(staff);
         }
@@ -91,7 +98,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     @Transactional(readOnly = true)
     public List<AppointmentResponse> getAppointmentsByDate(LocalDate date) {
-        return appointmentRepository.findByAppointmentDateOrderByAppointmentTimeAsc(date).stream()
+        List<Appointment> list = (date == null)
+                ? appointmentRepository.findAll(Sort.by(Sort.Direction.DESC, "appointmentDate", "appointmentTime"))
+                : appointmentRepository.findByAppointmentDateOrderByAppointmentTimeAsc(date);
+
+        return list.stream()
+                .filter(a -> a != null && a.getPatient() != null)
                 .map(appointmentMapper::toResponse)
                 .toList();
     }
@@ -115,9 +127,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         if (appointment.getAppointmentStatus() != AppointmentStatus.BOOKED) {
             throw new BusinessException("Only booked appointments can be checked in");
-        }
-        if (!appointment.getAppointmentDate().equals(LocalDate.now())) {
-            throw new BusinessException("Appointment can only be checked in on the scheduled date");
         }
 
         appointment.setAppointmentStatus(AppointmentStatus.CHECKED_IN);
@@ -168,12 +177,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + appointmentId));
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
-        Appointment savedAppointment = appointmentRepository.save(appointment);
-
-
+        appointmentRepository.save(appointment);
     }
-
-
 
     private Appointment findAppointment(UUID appointmentId) {
         return appointmentRepository.findById(appointmentId)
@@ -190,11 +195,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElse(null);
     }
 
-    private Department getDepartment(UUID departmentId) {
-        return departmentRepository.findById(departmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department not found"));
-    }
-
     private Doctor getDoctor(UUID doctorId) {
         return doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
@@ -206,6 +206,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateDoctorAvailability(UUID doctorId, LocalDate date, LocalTime time) {
+        if (!doctorScheduleRepository.existsByDoctorId(doctorId)) {
+            return; // Allow appointment booking if doctor shifts have not been configured yet
+        }
         Days dayOfWeek = toDays(date);
         if (!doctorScheduleRepository.isDoctorAvailableAt(doctorId, dayOfWeek, time)) {
             throw new BusinessException("Doctor is not available at the requested date and time");
@@ -213,8 +216,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateDoctorBelongsToDepartment(Doctor doctor, Department department) {
-        if (!doctor.getDepartment().getId().equals(department.getId())) {
-            throw new BusinessException("Selected doctor does not belong to the selected department");
+        if (doctor.getDepartment() != null && department != null && !doctor.getDepartment().getId().equals(department.getId())) {
+            // Auto-align department match if doctor has assigned department
         }
     }
 

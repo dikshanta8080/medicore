@@ -1,5 +1,6 @@
 package com.acharya.dikshanta.HospitalManagement.doctor.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.acharya.dikshanta.HospitalManagement.common.enums.Days;
 import lombok.Builder;
 
@@ -14,7 +15,11 @@ public record DoctorScheduleResponse(
         String department,
         String specialization,
         Days day,
+
+        @JsonFormat(pattern = "HH:mm:ss")
         LocalTime startTime,
+
+        @JsonFormat(pattern = "HH:mm:ss")
         LocalTime endTime
 ) {
 }
