@@ -2,7 +2,6 @@ package com.acharya.dikshanta.HospitalManagement.billing.dto.request;
 
 import com.acharya.dikshanta.HospitalManagement.billing.model.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
@@ -11,7 +10,6 @@ import java.util.UUID;
 
 public record RecordPaymentRequest(
 
-        @NotNull(message = "Invoice ID is required")
         UUID invoiceId,
 
         @NotNull(message = "Paid amount is required")
@@ -23,7 +21,5 @@ public record RecordPaymentRequest(
 
         String transactionId,
 
-        @NotNull(message = "Transaction date is required")
-        @PastOrPresent(message = "Transaction date cannot be in the future")
         LocalDateTime transactionDate
-) {}
+) {}

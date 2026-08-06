@@ -25,6 +25,7 @@ public class InvoiceMapper {
                 .id(invoice.getId())
                 .invoiceNumber(invoice.getInvoiceNumber())
                 .patientId(invoice.getPatient().getId())
+                .patientName(invoice.getPatient() != null ? invoice.getPatient().getFullName() : null)
                 .subTotal(invoice.getSubTotal())
                 .discountAmount(invoice.getDiscountAmount())
                 .taxAmount(invoice.getTaxAmount())

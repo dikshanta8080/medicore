@@ -33,7 +33,8 @@ public class StaffService {
     @Transactional
     public StaffResponse createStaff(CreateStaffRequest request) {
         checkIfStaffAlreadyExists(request);
-        User user = buildUser(request, Role.RECEPTIONIST);
+        Role assignedRole = request.role() != null ? request.role() : Role.RECEPTIONIST;
+        User user = buildUser(request, assignedRole);
         Staff staff = staffMapper.toStaff(request);
         staff.setUser(userRepository.save(user));
         return staffMapper.toResponse(staffRepository.save(staff));
@@ -89,16 +90,25 @@ public class StaffService {
     @Transactional
     public void deleteStaff(UUID id) {
         Staff staff = findStaff(id);
+        User user = staff.getUser();
+
+        // Detach doctor from staff before deletion to avoid FK constraint issues
         doctorRepository.findByStaffId(id).ifPresent(doctor -> {
+            doctor.setStaff(null);
+            doctorRepository.save(doctor);
             doctorRepository.delete(doctor);
         });
-        User user = staff.getUser();
+
+        // Detach user reference from staff before deleting staff
+        staff.setUser(null);
+        staffRepository.save(staff);
         staffRepository.delete(staff);
+
         if (user != null) {
             try {
                 userRepository.delete(user);
             } catch (Exception e) {
-                // Soft delete user flag if referenced in audit trails
+                // Soft-delete user if referenced in audit trails
                 user.setDeleted(true);
                 userRepository.save(user);
             }

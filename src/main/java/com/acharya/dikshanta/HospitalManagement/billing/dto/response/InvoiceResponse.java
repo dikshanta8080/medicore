@@ -13,6 +13,7 @@ public record InvoiceResponse(
         UUID id,
         String invoiceNumber,
         UUID patientId,
+        String patientName,
         BigDecimal subTotal,
         BigDecimal discountAmount,
         BigDecimal taxAmount,

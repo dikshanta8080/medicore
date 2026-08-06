@@ -1,6 +1,7 @@
 package com.acharya.dikshanta.HospitalManagement.identity.dto.request;
 
 import com.acharya.dikshanta.HospitalManagement.common.enums.Gender;
+import com.acharya.dikshanta.HospitalManagement.common.enums.Role;
 import lombok.Builder;
 
 @Builder
@@ -11,7 +12,8 @@ public record CreateStaffRequest(
         String password,
         String address,
         String phoneNumber,
-        Gender gender
+        Gender gender,
+        Role role
 ) {
 }
 

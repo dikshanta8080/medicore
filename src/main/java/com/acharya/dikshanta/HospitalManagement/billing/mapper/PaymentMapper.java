@@ -15,7 +15,7 @@ public class PaymentMapper {
                 .amountPaid(request.amountPaid())
                 .paymentMethod(request.paymentMethod())
                 .transactionId(request.transactionId())
-                .transactionDate(request.transactionDate())
+                .transactionDate(request.transactionDate() != null ? request.transactionDate() : LocalDateTime.now())
                 .invoice(invoice)
                 .build();
     }
